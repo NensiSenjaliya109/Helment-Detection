@@ -2,6 +2,7 @@ import cv2
 import time
 import threading
 import tkinter as tk
+import database
 
 class VideoProcessor:
     def __init__(self, video_source=0):
@@ -46,9 +47,9 @@ class VideoProcessor:
         popup.after(3000, popup.destroy)
         popup.mainloop()
 
-    def _send_notification(self, title, message, is_danger=True):
+    def _send_notification(self, title, message, is_danger=True, confidence=0.0):
         """
-        Sends the top-center popup in a background thread.
+        Sends the top-center popup in a background thread and logs it to Supabase.
         Only fires if the cooldown (3 seconds) has passed.
         """
         current_time = time.time()
@@ -56,6 +57,11 @@ class VideoProcessor:
             bg_color = "#CC0000" if is_danger else "#007700"  # Red or Green
             t = threading.Thread(target=self._show_popup, args=(title, message, bg_color), daemon=True)
             t.start()
+            
+            # --- SUPABASE LOGGING ---
+            status = "Danger" if is_danger else "Safe"
+            database.log_detection(status, confidence)
+            
             self.last_notification_time = current_time
 
     def process_and_display(self, detector):
@@ -82,6 +88,8 @@ class VideoProcessor:
             # Track what was found in this frame for notifications
             found_no_helmet = False
             found_helmet = False
+            max_danger_conf = 0.0
+            max_safe_conf = 0.0
 
             # --- STEP 2: Draw the Boxes MANUALLY ---
             for r in results:
@@ -102,24 +110,28 @@ class VideoProcessor:
                     cv2.putText(annotated_frame, display_text, (x1, y1 - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
-                    # Track what was detected
+                    # Track what was detected and its confidence
                     if class_id == 0:
                         found_no_helmet = True
+                        max_danger_conf = max(max_danger_conf, confidence)
                     elif class_id == 1:
                         found_helmet = True
+                        max_safe_conf = max(max_safe_conf, confidence)
 
-            # --- STEP 3: Send Popup Notification ---
+            # --- STEP 3: Send Popup Notification and Log to Database ---
             if found_no_helmet:
                 self._send_notification(
                     title="🚨 DANGER - No Helmet!",
                     message="Person without helmet detected! Wear safety gear!",
-                    is_danger=True
+                    is_danger=True,
+                    confidence=max_danger_conf
                 )
             elif found_helmet:
                 self._send_notification(
                     title="✅ Safe - Helmet Detected",
                     message="All persons are wearing helmets. Stay safe!",
-                    is_danger=False
+                    is_danger=False,
+                    confidence=max_safe_conf
                 )
 
             # --- STEP 4: Show the Picture ---
