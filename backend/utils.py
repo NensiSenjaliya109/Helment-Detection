@@ -1,5 +1,5 @@
 import cv2
-import database
+from backend import database
 
 def draw_boxes(frame, results, log_to_db=False):
     """

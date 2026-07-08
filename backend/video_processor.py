@@ -2,7 +2,7 @@ import cv2
 import time
 import threading
 import tkinter as tk
-import database
+from backend import database
 
 class VideoProcessor:
     def __init__(self, video_source=0):
