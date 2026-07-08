@@ -1,5 +1,7 @@
 # 🪖 AI-Powered Helmet Detection System
 
+🌐 **Live Demo:** [https://helment-detection.onrender.com/](https://helment-detection.onrender.com/)
+
 Welcome to the **Helmet Detection System**! This is a complete, production-ready computer vision application built to automatically monitor safety compliance using state-of-the-art AI.
 
 ---
@@ -76,3 +78,21 @@ Start the web application by running:
 streamlit run frontend/app.py
 ```
 A browser window will automatically open at `http://localhost:8501` showing the dashboard!
+
+---
+
+# 🌍 Cloud Deployment
+
+This project is fully configured for deployment on cloud platforms like **Render**, **AWS**, or **Google Cloud**.
+
+### Render Deployment Instructions:
+1. Ensure your `requirements.txt` contains `opencv-python-headless` instead of `opencv-python` to prevent Linux GUI crashing.
+2. Push your code to GitHub.
+3. Create a **New Web Service** on Render and connect the repository.
+4. Set the **Build Command**: `pip install -r requirements.txt`
+5. Set the **Start Command**: `streamlit run frontend/app.py --server.port $PORT`
+6. Under **Environment Variables**, add:
+   - `PYTHON_VERSION` = `3.10.13` (Required to prevent compilation errors)
+   - `SUPABASE_URL` = `your_url`
+   - `SUPABASE_KEY` = `your_key`
+7. Deploy!
