@@ -1,8 +1,15 @@
 import cv2
 import time
 import threading
-import tkinter as tk
+import sys
+import platform
 from backend import database
+
+# tkinter only works on Windows desktops, not on cloud Linux servers
+_HAS_TKINTER = platform.system() == "Windows"
+if _HAS_TKINTER:
+    import tkinter as tk
+
 
 class VideoProcessor:
     def __init__(self, video_source=0):
@@ -21,8 +28,12 @@ class VideoProcessor:
     def _show_popup(self, title, message, bg_color):
         """
         Creates a custom popup window at the TOP CENTER of the screen.
-        Runs in its own thread so it never freezes the video.
+        Only runs on Windows desktops - skipped on cloud servers.
         """
+        if not _HAS_TKINTER:
+            print(f"[Notification] {title}: {message}")
+            return
+
         popup = tk.Tk()
         popup.overrideredirect(True)   # No title bar or borders
         popup.attributes("-topmost", True)  # Always on top of everything
