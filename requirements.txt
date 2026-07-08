@@ -1,6 +1,4 @@
 ultralytics
-# Headless OpenCV is required for cloud Linux servers (no display/GUI needed)
-opencv-python-headless
 supabase
 python-dotenv
 streamlit
