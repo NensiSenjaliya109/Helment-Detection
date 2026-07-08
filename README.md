@@ -1,7 +1,5 @@
 # 🪖 AI-Powered Helmet Detection System
 
-🌐 **Live Demo:** [https://helment-detection.onrender.com/](https://helment-detection.onrender.com/)
-
 Welcome to the **Helmet Detection System**! This is a complete, production-ready computer vision application built to automatically monitor safety compliance using state-of-the-art AI.
 
 ---
@@ -83,16 +81,18 @@ A browser window will automatically open at `http://localhost:8501` showing the 
 
 # 🌍 Cloud Deployment
 
-This project is fully configured for deployment on cloud platforms like **Render**, **AWS**, or **Google Cloud**.
+This project is fully configured for deployment on **Streamlit Community Cloud**.
 
-### Render Deployment Instructions:
-1. Ensure your `requirements.txt` contains `opencv-python-headless` instead of `opencv-python` to prevent Linux GUI crashing.
+### Streamlit Deployment Instructions:
+1. Ensure your `requirements.txt` contains `opencv-python-headless` instead of `opencv-python`.
 2. Push your code to GitHub.
-3. Create a **New Web Service** on Render and connect the repository.
-4. Set the **Build Command**: `pip install -r requirements.txt`
-5. Set the **Start Command**: `streamlit run frontend/app.py --server.port $PORT`
-6. Under **Environment Variables**, add:
-   - `PYTHON_VERSION` = `3.10.13` (Required to prevent compilation errors)
-   - `SUPABASE_URL` = `your_url`
-   - `SUPABASE_KEY` = `your_key`
-7. Deploy!
+3. Go to [share.streamlit.io](https://share.streamlit.io/) and log in with your GitHub account.
+4. Click **New app**.
+5. Select your repository `Helment-Detection` and set the **Main file path** to `frontend/app.py`.
+6. Click **Advanced settings...** and add your secrets:
+   ```toml
+   SUPABASE_URL="your_url"
+   SUPABASE_KEY="your_key"
+   PYTHONPATH="/mount/src/helment-detection/src"
+   ```
+7. Click **Deploy!**
