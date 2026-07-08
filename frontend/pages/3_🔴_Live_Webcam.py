@@ -75,8 +75,8 @@ if st.session_state.run_camera:
         result_placeholder.image(annotated_rgb, caption="AI Detection Result", use_container_width=True)
 
         # Show detection stats
-        helmets = stats.get("helmets", 0)
-        no_helmets = stats.get("no_helmets", 0)
+        helmets = stats.get("helmet_count", 0)
+        no_helmets = stats.get("no_helmet_count", 0)
         if no_helmets > 0:
             stats_placeholder.error(f"🚨 **DANGER:** {no_helmets} person(s) without helmet detected!")
         elif helmets > 0:
