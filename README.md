@@ -1,5 +1,7 @@
 # 🪖 AI-Powered Helmet Detection System
 
+🌐 **Live Demo:** [https://helment-detection.streamlit.app/](https://helment-detection.streamlit.app/)
+
 Welcome to the **Helmet Detection System**! This is a complete, production-ready computer vision application built to automatically monitor safety compliance using state-of-the-art AI.
 
 ---
