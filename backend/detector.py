@@ -10,12 +10,8 @@ class HelmetDetector:
         print(f"Loading model from {model_path}...")
         self.model = YOLO(model_path)
         
-        # --- CLASS NAME FIX ---
-        # Always override the class names to show human-readable labels.
-        # The dataset stored numbers (0, 1) instead of text, so we fix it here.
-        self.model.names[0] = "Helmet"
-        self.model.names[1] = "No Helmet"
-        print(f"Class names set to: {self.model.names}")
+        # Let the model use its own class names directly!
+        print(f"Model internal classes: {self.model.names}")
         
         print("Model loaded successfully!")
 

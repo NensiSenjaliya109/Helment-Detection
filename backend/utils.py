@@ -23,8 +23,9 @@ def draw_boxes(frame, results, log_to_db=False):
             class_id = int(box.cls[0])
             confidence = float(box.conf[0])
 
-            label_map = {0: "Helmet", 1: "No Helmet"}
-            label = label_map.get(class_id, f"Class {class_id}")
+            # Dynamically get the REAL class name from the model itself
+            # This prevents us from accidentally calling a "face" a "Helmet"
+            label = r.names.get(class_id, f"Class {class_id}")
 
             # GREEN for Helmet ✅, RED for No Helmet 🚨
             color = (0, 255, 0) if class_id == 0 else (0, 0, 255)
