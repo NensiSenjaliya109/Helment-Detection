@@ -6,6 +6,8 @@ def draw_boxes(frame, results, log_to_db=False):
     Draws bounding boxes on the given frame based on YOLO results.
     Optionally logs detections to the Supabase database.
     Returns the annotated frame, and stats about what was detected.
+    
+    Uses the model's ACTUAL class names to determine Safe vs Danger.
     """
     annotated_frame = frame.copy()
     
@@ -23,29 +25,33 @@ def draw_boxes(frame, results, log_to_db=False):
             class_id = int(box.cls[0])
             confidence = float(box.conf[0])
 
-            # Dynamically get the REAL class name from the model itself
-            # This prevents us from accidentally calling a "face" a "Helmet"
-            label = r.names.get(class_id, f"Class {class_id}")
+            # Get the REAL class name from the model
+            label = r.names.get(class_id, f"Class {class_id}").lower()
 
-            # GREEN for Helmet ✅, RED for No Helmet 🚨
-            color = (0, 255, 0) if class_id == 0 else (0, 0, 255)
+            # Determine if this detection is "safe" (helmet) or "danger" (no helmet / head)
+            # by checking the actual class name from the model
+            is_helmet = "helmet" in label and "no" not in label
+            is_no_helmet = ("no" in label and "helmet" in label) or label in ["head", "no-helmet", "no_helmet"]
+
+            if is_helmet:
+                color = (0, 255, 0)  # GREEN for Helmet ✅
+                found_helmet = True
+                helmet_count += 1
+                max_safe_conf = max(max_safe_conf, confidence)
+            elif is_no_helmet:
+                color = (0, 0, 255)  # RED for No Helmet 🚨
+                found_no_helmet = True
+                no_helmet_count += 1
+                max_danger_conf = max(max_danger_conf, confidence)
+            else:
+                color = (255, 165, 0)  # ORANGE for unknown/other classes
 
             cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
             display_text = f"{label} {confidence:.2f}"
             cv2.putText(annotated_frame, display_text, (x1, y1 - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
-            # Track what was detected
-            if class_id == 0:
-                found_helmet = True
-                helmet_count += 1
-                max_safe_conf = max(max_safe_conf, confidence)
-            elif class_id == 1:
-                found_no_helmet = True
-                no_helmet_count += 1
-                max_danger_conf = max(max_danger_conf, confidence)
-
-    # Database logging if requested (e.g. for images/videos processing directly via Streamlit)
+    # Database logging
     if log_to_db:
         if found_no_helmet:
             database.log_detection("Danger", max_danger_conf)
@@ -61,3 +67,4 @@ def draw_boxes(frame, results, log_to_db=False):
     }
     
     return annotated_frame, stats
+
