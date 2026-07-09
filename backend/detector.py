@@ -21,8 +21,9 @@ class HelmetDetector:
         """
         # The model looks at the frame and returns a list of results
         # We use stream=True for better performance with continuous video frames
-        # We increased conf=0.65 to filter out false positives (like bare heads being detected as helmets).
-        results = self.model(frame, stream=True, conf=0.65)
+        # conf=0.40 — lower threshold to catch more detections.
+        # The model is still learning, so we keep this lower to avoid missing real helmets/heads.
+        results = self.model(frame, stream=True, conf=0.40)
 
         # stream=True is a small optimization that tells YOLO to expect a 
         # continuous stream of images rather than just one random picture,
