@@ -3,23 +3,44 @@ import streamlit as st
 def apply_custom_css():
     st.markdown("""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap');
+        /* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        /* 
+           GLOBAL DESIGN TOKENS
+        */
+        :root {
+            --bg-base: #0B0D0C;
+            --bg-panel: #101512;
+            --bg-raised: #171C19;
+            --accent-green: #39FF88;
+            --accent-amber: #FF9F1C;
+            --accent-red: #E14B4B;
+            --text-primary: #E8ECEA;
+            --text-secondary: #7C8B85;
+            --border-panel: #2A322D;
+            
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
 
         /* Global Typography & Background */
         html, body, [class*="css"] {
-            font-family: 'Inter', sans-serif;
-            background-color: #0B0D0C;
-            color: #E8ECEA;
+            font-family: var(--font-body);
+            background-color: var(--bg-base);
+            color: var(--text-primary);
         }
         
-        h1, h2, h3 {
-            font-family: 'Space Grotesk', sans-serif;
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-display);
             text-transform: uppercase;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
         }
 
         .mono-text {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
         }
 
         /* Hide Streamlit Default Elements */
@@ -29,181 +50,212 @@ def apply_custom_css():
         .stDeployButton {display:none;}
         
         /* Modern Button Styling */
-        div.stButton > button:first-child {
-            background-color: #39FF88;
-            color: #0B0D0C;
-            border: none;
-            border-radius: 2px;
+        div.stButton > button {
+            border-radius: 4px;
             padding: 8px 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
+            font-family: var(--font-mono);
             text-transform: uppercase;
+            font-weight: 700;
             transition: all 0.2s ease;
-            box-shadow: none;
-        }
-        div.stButton > button:first-child:hover {
-            background-color: #2ED872;
-            color: #0B0D0C;
-            transform: translateY(-1px);
+            letter-spacing: 0.05em;
         }
 
-        /* Secondary Button (for forms/stop) */
+        /* Primary Button */
+        div.stButton > button:first-child:not([kind="secondary"]) {
+            background-color: var(--accent-green);
+            color: #000000;
+            border: 1px solid var(--accent-green);
+            box-shadow: none;
+        }
+        div.stButton > button:first-child:not([kind="secondary"]):hover {
+            background-color: #2ED870;
+            border-color: #2ED870;
+            color: #000000;
+            box-shadow: 0 0 10px rgba(57, 255, 136, 0.3);
+        }
+
+        /* Secondary Button (Ghost Outline) */
         div.stButton > button[kind="secondary"] {
-            background: transparent;
-            color: #E8ECEA;
-            border: 1px solid #7C8B85;
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-panel);
+            box-shadow: none;
         }
         div.stButton > button[kind="secondary"]:hover {
-            background: rgba(124, 139, 133, 0.1);
-            color: #ffffff;
-            border-color: #E8ECEA;
+            background-color: var(--bg-raised);
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
         }
 
-        /* Rounded Corners for Images & Videos - Sharp in this theme */
-        img, video {
+        /* Cards/Panels */
+        div[data-testid="stMetric"], .forensic-card {
+            background-color: var(--bg-panel);
             border-radius: 0px;
-            box-shadow: none;
-            border: 1px solid #2A322D;
-        }
-
-        /* Metric Cards / Panels */
-        div[data-testid="stMetric"], .metric-card {
-            background-color: #101512;
-            border-radius: 0px;
-            padding: 16px;
-            border: 1px solid #2A322D;
-            transition: all 0.2s ease;
-        }
-        div[data-testid="stMetric"]:hover, .metric-card:hover {
-            border-color: rgba(57, 255, 136, 0.5);
-            transform: none;
+            padding: 15px;
+            border: 1px solid var(--border-panel);
             box-shadow: none;
         }
-        
-        div[data-testid="stMetricValue"] {
-            font-family: 'JetBrains Mono', monospace;
-            color: #39FF88;
-        }
-        div[data-testid="stMetricLabel"] {
-            color: #7C8B85;
+        div[data-testid="stMetric"] label {
+            font-family: var(--font-mono);
+            color: var(--text-secondary);
             text-transform: uppercase;
-            font-size: 12px;
-            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.8rem;
+        }
+        div[data-testid="stMetric"] div {
+            font-family: var(--font-mono);
+            color: var(--text-primary);
         }
 
-        /* Headers / Titles */
-        h1 {
-            font-size: 32px !important;
-            font-weight: 700 !important;
-            margin-bottom: 16px !important;
-        }
-        
-        /* Expander/Cards Styling */
+        /* Expander Styling */
         .streamlit-expanderHeader {
             border-radius: 0px;
-            background-color: #101512;
-            border: 1px solid #2A322D;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
         }
         
         /* File Uploader Container (Scanner Gate) */
         [data-testid="stFileUploader"] {
-            background-color: #101512;
-            border: 1px solid #2A322D;
+            background-color: var(--bg-base);
+            border: 1px solid var(--border-panel);
             border-radius: 0px;
-            padding: 24px;
+            padding: 20px;
             position: relative;
-            transition: all 0.2s ease;
         }
         [data-testid="stFileUploader"]::before {
             content: '';
             position: absolute;
-            top: -1px; left: -1px; right: -1px; bottom: -1px;
-            border: 1px solid transparent;
-            background: linear-gradient(90deg, #39FF88 10px, transparent 10px) 0 0,
-                        linear-gradient(90deg, #39FF88 10px, transparent 10px) 0 100%,
-                        linear-gradient(0deg, #39FF88 10px, transparent 10px) 0 0,
-                        linear-gradient(0deg, #39FF88 10px, transparent 10px) 100% 0;
-            background-repeat: no-repeat;
-            background-size: 20px 20px;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 2px solid transparent;
+            background: linear-gradient(to right, var(--border-panel) 50%, transparent 50%) top / 20px 2px repeat-x,
+                        linear-gradient(to right, var(--border-panel) 50%, transparent 50%) bottom / 20px 2px repeat-x,
+                        linear-gradient(to bottom, var(--border-panel) 50%, transparent 50%) left / 2px 20px repeat-y,
+                        linear-gradient(to bottom, var(--border-panel) 50%, transparent 50%) right / 2px 20px repeat-y;
             pointer-events: none;
         }
-        [data-testid="stFileUploader"]:hover {
-            border-color: #39FF88;
-            background-color: rgba(57, 255, 136, 0.02);
-        }
-        
-        /* Dataframes */
-        [data-testid="stDataFrame"] {
-            border-radius: 0px;
-            overflow: hidden;
-            border: 1px solid #2A322D;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-        }
-        
-        /* Sidebar Restyling - Film Reel Style */
-        [data-testid="stSidebar"] {
-            background-color: #101512;
-            border-right: 1px solid #2A322D;
-        }
-        [data-testid="stSidebarNav"] span {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-        [data-testid="stSidebarNav"] [data-testid="stSidebarNavLink"] {
-            border-radius: 0;
-            background-color: transparent !important;
-        }
-        /* Target the active link indicator */
-        [data-testid="stSidebarNav"] [aria-current="page"] {
-             border-left: 3px solid #39FF88;
-        }
-        [data-testid="stSidebarNav"] [aria-current="page"] span {
-             color: #39FF88;
-        }
 
+        /* Dataframes (History Table) */
+        [data-testid="stDataFrame"] {
+            border: 1px solid var(--border-panel);
+            border-radius: 0px;
+        }
+        [data-testid="stDataFrame"] table {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+        [data-testid="stDataFrame"] th {
+            background-color: var(--bg-panel) !important;
+            color: var(--text-secondary) !important;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-panel) !important;
+        }
+        [data-testid="stDataFrame"] tr:nth-child(even) {
+            background-color: var(--bg-panel) !important;
+        }
+        [data-testid="stDataFrame"] tr:nth-child(odd) {
+            background-color: var(--bg-base) !important;
+        }
+        
+        /* Sidebar Restyling (Film Reel Index) */
+        [data-testid="stSidebar"] {
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border-panel);
+        }
+        
         /* Scanline Animation */
         @keyframes scanline {
             0% { transform: translateY(-100%); }
             100% { transform: translateY(100%); }
         }
-        .scanline-container {
+        .scanline-sweep {
             position: relative;
             overflow: hidden;
-            border: 1px solid #2A322D;
-            display: inline-block;
-            width: 100%;
         }
-        .scanline-active::after {
-            content: "";
+        .scanline-sweep::after {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 5px;
-            background: rgba(57, 255, 136, 0.3);
-            box-shadow: 0 0 10px rgba(57, 255, 136, 0.5);
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to bottom, transparent, rgba(57, 255, 136, 0.5), transparent);
             animation: scanline 3s linear infinite;
             pointer-events: none;
             z-index: 10;
         }
         
-        /* Live Bezel Pulse */
-        @keyframes livePulse {
-            0% { border-color: #2A322D; }
-            50% { border-color: #39FF88; box-shadow: 0 0 8px rgba(57, 255, 136, 0.2) inset; }
-            100% { border-color: #2A322D; }
+        /* Pulse Animation (for Live state) */
+        @keyframes pulse-amber {
+            0% { border-color: rgba(255, 159, 28, 0.2); }
+            50% { border-color: rgba(255, 159, 28, 1); }
+            100% { border-color: rgba(255, 159, 28, 0.2); }
         }
-        .live-bezel-active {
-            animation: livePulse 2s infinite;
+        .live-bezel {
+            border: 2px solid var(--accent-amber);
+            animation: pulse-amber 2s infinite;
+            position: relative;
+            padding: 5px;
+            background-color: var(--bg-panel);
         }
-
-        /* Danger Status Colors */
-        .text-danger { color: #E14B4B !important; font-family: 'JetBrains Mono', monospace; font-size: 14px;}
-        .text-warning { color: #FF9F1C !important; font-family: 'JetBrains Mono', monospace; font-size: 14px;}
-        .text-safe { color: #39FF88 !important; font-family: 'JetBrains Mono', monospace; font-size: 14px;}
-        .text-muted { color: #7C8B85 !important; font-family: 'JetBrains Mono', monospace; font-size: 14px;}
         
+        /* Global Header custom classes */
+        .header-title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+        .header-status-badge {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 2px;
+            border: 1px solid;
+        }
+        .status-idle {
+            color: var(--text-secondary);
+            border-color: var(--border-panel);
+            background-color: var(--bg-base);
+        }
+        .status-scanning {
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+            background-color: rgba(57, 255, 136, 0.1);
+        }
+        .status-live {
+            color: var(--accent-amber);
+            border-color: var(--accent-amber);
+            background-color: rgba(255, 159, 28, 0.1);
+        }
+        .header-btn {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border-panel);
+            padding: 4px 10px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+        .header-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+            background: var(--bg-raised);
+        }
+        .user-badge {
+            width: 28px;
+            height: 28px;
+            background-color: var(--bg-raised);
+            border: 1px solid var(--border-panel);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: bold;
+        }
         </style>
     """, unsafe_allow_html=True)

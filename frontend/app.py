@@ -17,17 +17,17 @@ apply_custom_css()
 
 # --- TOP NAVIGATION BAR (Custom HTML) ---
 st.markdown("""
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background-color: #101512; border-bottom: 1px solid #2A322D; margin-top: -60px; margin-bottom: 30px; margin-left: -4rem; margin-right: -4rem;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <div style="font-size: 20px;">🪖</div>
-        <div style="font-size: 20px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.5px; text-transform: uppercase;">System Overview</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 30px; background-color: var(--bg-panel); border-bottom: 1px solid var(--border-panel); margin-top: -60px; margin-bottom: 30px; margin-left: -4rem; margin-right: -4rem;">
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <span style="font-size: 24px;">🪖</span>
+        <div class="header-title">SYSTEM DASHBOARD</div>
     </div>
     <div style="display: flex; gap: 10px; align-items: center;">
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #39FF88; padding: 4px 8px; border: 1px solid rgba(57, 255, 136, 0.3); background: rgba(57, 255, 136, 0.05);">● IDLE</div>
-        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">THEME</span>
-        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">SYNC</span>
-        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">ALERTS</span>
-        <div style="width: 28px; height: 28px; border: 1px solid #2A322D; background: #0B0D0C; color: #E8ECEA; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: 'JetBrains Mono', monospace; font-size: 12px;">N</div>
+        <div class="header-status-badge status-idle">● IDLE</div>
+        <button class="header-btn">THEME</button>
+        <button class="header-btn">SYNC</button>
+        <button class="header-btn">ALERTS</button>
+        <div class="user-badge">N</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -35,21 +35,20 @@ st.markdown("""
 # --- SIDEBAR REWRITE ---
 with st.sidebar:
     st.markdown("""
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-        <div style="font-size: 28px;">🪖</div>
-        <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px; text-transform: uppercase;">Helmet AI</div>
+    <div style="margin-bottom: 30px;">
+        <div class="header-title" style="font-size: 18px; margin-bottom: 5px;">HELMET AI</div>
+        <div class="mono-text" style="font-size: 11px; color: var(--text-secondary); letter-spacing: 1px;">FORENSIC MONITORING SYSTEM</div>
     </div>
-    <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7C8B85; margin-bottom: 30px; text-transform: uppercase;">Forensic Monitor Desk</div>
     """, unsafe_allow_html=True)
     
     st.markdown("<br><br><br><br><br><br><br><br><br><br>", unsafe_allow_html=True) # Push to bottom
     st.markdown("---")
-    st.markdown("### System Status")
-    st.markdown("<span style='color: #39FF88; font-family: \"JetBrains Mono\", monospace; font-size: 12px;'>● YOLO MODEL LOADED</span>", unsafe_allow_html=True)
-    st.markdown("<span style='color: #39FF88; font-family: \"JetBrains Mono\", monospace; font-size: 12px;'>● DB CONNECTED</span>", unsafe_allow_html=True)
+    st.markdown("### SYSTEM DIAGNOSTICS", unsafe_allow_html=True)
+    st.markdown("<div class='mono-text' style='font-size: 12px;'><span style='color: var(--accent-green)'>[OK]</span> YOLO CORE LOADED</div>", unsafe_allow_html=True)
+    st.markdown("<div class='mono-text' style='font-size: 12px;'><span style='color: var(--accent-green)'>[OK]</span> DB CONNECTION ESTABLISHED</div>", unsafe_allow_html=True)
 
 # --- MAIN DASHBOARD CONTENT ---
-st.markdown("<h1>Dashboard Overview</h1>", unsafe_allow_html=True)
+st.markdown("<h3>DASHBOARD OVERVIEW</h3>", unsafe_allow_html=True)
 
 # Fetch basic stats
 history = database.get_history()
@@ -64,37 +63,37 @@ if total_detections > 0:
 # Summary Cards Layout
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.metric(label="Total Detections", value=total_detections)
+    st.metric(label="TOTAL SCANS", value=f"{total_detections:04d}")
 with col2:
-    st.metric(label="Safe 🟢", value=helmets_safe)
+    st.metric(label="COMPLIANT (SAFE)", value=f"{helmets_safe:04d}")
 with col3:
-    st.metric(label="No Helmet 🔴", value=violations_danger)
+    st.metric(label="FLAGGED (DANGER)", value=f"{violations_danger:04d}")
 with col4:
-    st.metric(label="Avg Confidence ⚡", value=f"{avg_conf*100:.1f}%")
+    st.metric(label="AVG CONFIDENCE", value=f"{avg_conf*100:.1f}%")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # Quick Actions
-st.markdown("### Quick Actions")
+st.markdown("<h3>MODULE QUICK START</h3>", unsafe_allow_html=True)
 fcol1, fcol2, fcol3 = st.columns(3)
 with fcol1:
     st.markdown("""
-    <div class="metric-card">
-        <h3 style="margin-top:0; font-size: 16px;">[01] IMAGE SCAN</h3>
-        <p style="color: #7C8B85; font-size: 13px;">Upload static images for bulk compliance checking.</p>
+    <div class="forensic-card">
+        <h4 style="margin-top:0; font-size: 14px;">[01] IMAGE SCAN</h4>
+        <p class="mono-text" style="color: var(--text-secondary); font-size: 12px; margin-bottom: 0;">Upload static images for bulk forensic compliance checking.</p>
     </div>
     """, unsafe_allow_html=True)
 with fcol2:
     st.markdown("""
-    <div class="metric-card">
-        <h3 style="margin-top:0; font-size: 16px;">[02] VIDEO AUDIT</h3>
-        <p style="color: #7C8B85; font-size: 13px;">Process pre-recorded footage frame-by-frame.</p>
+    <div class="forensic-card">
+        <h4 style="margin-top:0; font-size: 14px;">[02] VIDEO AUDIT</h4>
+        <p class="mono-text" style="color: var(--text-secondary); font-size: 12px; margin-bottom: 0;">Process pre-recorded footage frame-by-frame through model.</p>
     </div>
     """, unsafe_allow_html=True)
 with fcol3:
     st.markdown("""
-    <div class="metric-card">
-        <h3 style="margin-top:0; font-size: 16px;">[03] LIVE MONITOR</h3>
-        <p style="color: #7C8B85; font-size: 13px;">Connect to webcam for real-time site monitoring.</p>
+    <div class="forensic-card">
+        <h4 style="margin-top:0; font-size: 14px;">[03] LIVE MONITOR</h4>
+        <p class="mono-text" style="color: var(--text-secondary); font-size: 12px; margin-bottom: 0;">Connect to webcam for real-time live site monitoring.</p>
     </div>
     """, unsafe_allow_html=True)
