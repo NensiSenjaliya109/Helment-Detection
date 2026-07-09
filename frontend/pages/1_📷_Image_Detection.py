@@ -10,6 +10,9 @@ from backend.detector import HelmetDetector
 
 st.set_page_config(page_title="Image Detection", page_icon="📷", layout="wide")
 
+from frontend.ui_utils import apply_custom_css
+apply_custom_css()
+
 st.title("📷 Image Detection")
 st.write("Upload an image to detect helmets and safety violations.")
 

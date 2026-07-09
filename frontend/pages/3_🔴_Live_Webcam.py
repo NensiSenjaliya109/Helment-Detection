@@ -11,6 +11,9 @@ import time
 
 st.set_page_config(page_title="Live Webcam", page_icon="🔴", layout="wide")
 
+from frontend.ui_utils import apply_custom_css
+apply_custom_css()
+
 st.title("🔴 Live Webcam Detection")
 st.write("Real-time AI monitoring using your browser's camera.")
 

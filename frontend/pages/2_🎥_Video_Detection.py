@@ -10,6 +10,9 @@ from backend.detector import HelmetDetector
 
 st.set_page_config(page_title="Video Detection", page_icon="🎥", layout="wide")
 
+from frontend.ui_utils import apply_custom_css
+apply_custom_css()
+
 st.title("🎥 Video Detection")
 st.write("Upload a video file to run YOLOv8 frame-by-frame.")
 
