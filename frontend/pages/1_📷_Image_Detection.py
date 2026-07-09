@@ -65,7 +65,7 @@ else:
     with col_img:
         st.markdown("<h4 style='font-size: 14px;'>[ DETECTION RESULT ]</h4>", unsafe_allow_html=True)
         # Using Streamlit width trick: use_container_width deprecation fix
-        st.image(annotated_frame_rgb, width=None)
+        st.image(annotated_frame_rgb, use_container_width=True)
     
     with col_stats:
         st.markdown("<h4 style='font-size: 14px;'>[ ANALYSIS ]</h4>", unsafe_allow_html=True)

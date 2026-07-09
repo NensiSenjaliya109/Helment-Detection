@@ -108,7 +108,7 @@ else:
         
         # Display in UI
         annotated_frame_rgb = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
-        stframe.image(annotated_frame_rgb, width="stretch")
+        stframe.image(annotated_frame_rgb, use_container_width=True)
         
         # Update Stats
         progress = (frame_count / total_frames) * 100 if total_frames > 0 else 0

@@ -104,7 +104,7 @@ if st.session_state.run_camera:
         fps = 1.0 / (time.time() - start_time)
 
         annotated_rgb = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
-        result_placeholder.image(annotated_rgb, width="stretch")
+        result_placeholder.image(annotated_rgb, use_container_width=True)
 
         helmets = stats.get("helmet_count", 0)
         no_helmets = stats.get("no_helmet_count", 0)
