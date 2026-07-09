@@ -14,21 +14,32 @@ st.set_page_config(page_title="Live Webcam", page_icon="🔴", layout="wide")
 from frontend.ui_utils import apply_custom_css
 apply_custom_css()
 
+if "run_camera" not in st.session_state:
+    st.session_state.run_camera = False
+if "last_db_log_time" not in st.session_state:
+    st.session_state.last_db_log_time = 0
+
+status_badge = "<div style=\"font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #E14B4B; padding: 4px 8px; border: 1px solid rgba(225, 75, 75, 0.3); background: rgba(225, 75, 75, 0.05); animation: livePulse 2s infinite;\">● LIVE</div>" if st.session_state.run_camera else "<div style=\"font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #39FF88; padding: 4px 8px; border: 1px solid rgba(57, 255, 136, 0.3); background: rgba(57, 255, 136, 0.05);\">● IDLE</div>"
+
 # --- TOP NAVIGATION BAR ---
-st.markdown("""
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: #0F172A; border-bottom: 1px solid rgba(255,255,255,0.05); margin-top: -60px; margin-bottom: 30px; margin-left: -4rem; margin-right: -4rem;">
-    <div style="font-size: 20px; font-weight: 600; font-family: 'Poppins', sans-serif;">🔴 Live Monitor</div>
-    <div style="display: flex; gap: 15px; align-items: center;">
-        <span style="cursor: pointer; padding: 8px; border-radius: 8px; background: #1E293B;">🌙</span>
-        <span style="cursor: pointer; padding: 8px; border-radius: 8px; background: #1E293B;">🔄</span>
-        <span style="cursor: pointer; padding: 8px; border-radius: 8px; background: #1E293B;">🔔</span>
-        <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; display: flex; justify-content: center; align-items: center; font-weight: bold;">N</div>
+st.markdown(f"""
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background-color: #101512; border-bottom: 1px solid #2A322D; margin-top: -60px; margin-bottom: 30px; margin-left: -4rem; margin-right: -4rem;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="font-size: 20px;">🔴</div>
+        <div style="font-size: 20px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.5px; text-transform: uppercase;">Live Monitor</div>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        {status_badge}
+        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">THEME</span>
+        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">SYNC</span>
+        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">ALERTS</span>
+        <div style="width: 28px; height: 28px; border: 1px solid #2A322D; background: #0B0D0C; color: #E8ECEA; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: 'JetBrains Mono', monospace; font-size: 12px;">N</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-st.title("Live Camera Feed")
-st.markdown("<p style='color: #94A3B8; font-size: 16px; margin-bottom: 30px;'>Real-time AI monitoring utilizing your browser's webcam feed.</p>", unsafe_allow_html=True)
+st.title("LIVE CAMERA FEED")
+st.markdown("<p style='color: #7C8B85; font-size: 14px; font-family: \"JetBrains Mono\", monospace; margin-bottom: 30px; text-transform: uppercase;'>Real-time AI monitoring utilizing your browser's webcam feed.</p>", unsafe_allow_html=True)
 
 @st.cache_resource
 def load_detector():
@@ -36,18 +47,15 @@ def load_detector():
 
 detector = load_detector()
 
-if "run_camera" not in st.session_state:
-    st.session_state.run_camera = False
-if "last_db_log_time" not in st.session_state:
-    st.session_state.last_db_log_time = 0
-
 col1, col2 = st.columns(2)
 with col1:
-    if st.button("▶ Start Camera", use_container_width=True, type="primary"):
+    if st.button("▶ START CAMERA", use_container_width=True, type="primary"):
         st.session_state.run_camera = True
+        st.rerun()
 with col2:
-    if st.button("⏹ Stop Camera", use_container_width=True, type="secondary"):
+    if st.button("⏹ STOP CAMERA", use_container_width=True, type="secondary"):
         st.session_state.run_camera = False
+        st.rerun()
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -55,16 +63,18 @@ if st.session_state.run_camera:
     col_cam, col_analytics = st.columns([2, 1])
     
     with col_cam:
-        st.markdown("### Live Stream")
+        st.markdown("### LIVE STREAM")
+        st.markdown('<div style="border: 1px solid #39FF88;" class="live-bezel-active">', unsafe_allow_html=True)
         camera_frame = st.camera_input(label="Webcam", label_visibility="collapsed")
         result_placeholder = st.empty()
+        st.markdown('</div>', unsafe_allow_html=True)
+        stats_overlay = st.empty()
         
     with col_analytics:
-        st.markdown("### Realtime Analytics")
+        st.markdown("### REALTIME ANALYTICS")
         stat_helmets = st.empty()
         stat_danger = st.empty()
         stat_fps = st.empty()
-        stats_placeholder = st.empty()
 
     if camera_frame is not None:
         start_time = time.time()
@@ -88,22 +98,21 @@ if st.session_state.run_camera:
         helmets = stats.get("helmet_count", 0)
         no_helmets = stats.get("no_helmet_count", 0)
         
-        stat_helmets.metric("Helmets Detected", helmets)
-        stat_danger.metric("No Helmet", no_helmets)
-        stat_fps.metric("Processing Speed", f"{fps:.1f} FPS")
+        stat_helmets.metric("HELMETS (SAFE)", helmets)
+        stat_danger.metric("NO HELMET (DANGER)", no_helmets)
+        stat_fps.metric("PROCESSING SPEED", f"{fps:.1f} FPS")
         
-        st.markdown("<br>", unsafe_allow_html=True)
         if no_helmets > 0:
-            stats_placeholder.error(f"🚨 **DANGER**\n{no_helmets} person(s) without helmet detected!")
+            stats_overlay.markdown(f"<div style='border-left: 3px solid #E14B4B; padding-left: 10px; margin-top: 10px;'><span class='text-danger mono-text'>[!] FLAG: {no_helmets} PERSON(S) WITHOUT HELMET DETECTED</span></div>", unsafe_allow_html=True)
         elif helmets > 0:
-            stats_placeholder.success(f"✅ **SAFE**\n{helmets} person(s) wearing helmets.")
+            stats_overlay.markdown(f"<div style='border-left: 3px solid #39FF88; padding-left: 10px; margin-top: 10px;'><span class='text-safe mono-text'>[+] CLEAR: {helmets} PERSON(S) WEARING HELMETS</span></div>", unsafe_allow_html=True)
         else:
-            stats_placeholder.info("🔍 No persons detected in this frame.")
+            stats_overlay.markdown("<div style='border-left: 3px solid #7C8B85; padding-left: 10px; margin-top: 10px;'><span class='text-muted mono-text'>[-] NO TARGETS IDENTIFIED</span></div>", unsafe_allow_html=True)
 else:
     st.markdown("""
-        <div style='text-align: center; padding: 60px; background: #1E293B; border-radius: 16px; border: 1px dashed rgba(255,255,255,0.1);'>
-            <div style="font-size: 64px; margin-bottom: 20px;">📷</div>
-            <h3 style="color: #F8FAFC;">Camera is stopped</h3>
-            <p style="color: #94A3B8;">Click <strong>Start Camera</strong> to begin live detection.</p>
+        <div style='text-align: center; padding: 60px; background: #101512; border: 1px solid #2A322D;'>
+            <div style="font-size: 64px; margin-bottom: 20px;">🔴</div>
+            <h3 style="color: #E8ECEA;">CAMERA IS STOPPED</h3>
+            <p style="color: #7C8B85; font-family: 'JetBrains Mono', monospace; font-size: 13px; text-transform: uppercase;">Click <strong>START CAMERA</strong> to begin live detection.</p>
         </div>
     """, unsafe_allow_html=True)

@@ -15,19 +15,23 @@ apply_custom_css()
 
 # --- TOP NAVIGATION BAR ---
 st.markdown("""
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: #0F172A; border-bottom: 1px solid rgba(255,255,255,0.05); margin-top: -60px; margin-bottom: 30px; margin-left: -4rem; margin-right: -4rem;">
-    <div style="font-size: 20px; font-weight: 600; font-family: 'Poppins', sans-serif;">🎥 Video Audit</div>
-    <div style="display: flex; gap: 15px; align-items: center;">
-        <span style="cursor: pointer; padding: 8px; border-radius: 8px; background: #1E293B;">🌙</span>
-        <span style="cursor: pointer; padding: 8px; border-radius: 8px; background: #1E293B;">🔄</span>
-        <span style="cursor: pointer; padding: 8px; border-radius: 8px; background: #1E293B;">🔔</span>
-        <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; display: flex; justify-content: center; align-items: center; font-weight: bold;">N</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background-color: #101512; border-bottom: 1px solid #2A322D; margin-top: -60px; margin-bottom: 30px; margin-left: -4rem; margin-right: -4rem;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="font-size: 20px;">🎥</div>
+        <div style="font-size: 20px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.5px; text-transform: uppercase;">Video Audit</div>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #39FF88; padding: 4px 8px; border: 1px solid rgba(57, 255, 136, 0.3); background: rgba(57, 255, 136, 0.05);">● IDLE</div>
+        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">THEME</span>
+        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">SYNC</span>
+        <span style="cursor: pointer; padding: 6px 12px; border: 1px solid #2A322D; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;">ALERTS</span>
+        <div style="width: 28px; height: 28px; border: 1px solid #2A322D; background: #0B0D0C; color: #E8ECEA; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: 'JetBrains Mono', monospace; font-size: 12px;">N</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-st.title("Video Audit")
-st.markdown("<p style='color: #94A3B8; font-size: 16px; margin-bottom: 30px;'>Upload pre-recorded footage to run continuous YOLOv8 analysis frame-by-frame.</p>", unsafe_allow_html=True)
+st.title("VIDEO AUDIT")
+st.markdown("<p style='color: #7C8B85; font-size: 14px; font-family: \"JetBrains Mono\", monospace; margin-bottom: 30px; text-transform: uppercase;'>Drop footage here. Every frame gets scanned against the detection model.</p>", unsafe_allow_html=True)
 
 @st.cache_resource
 def load_detector():
@@ -44,17 +48,19 @@ if uploaded_file is not None:
     cap = cv2.VideoCapture(tfile.name)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
-    st.markdown("### Live Processing")
+    st.markdown("### LIVE PROCESSING")
     col_video, col_stats = st.columns([2, 1])
     
     with col_video:
+        st.markdown('<div class="scanline-container scanline-active">', unsafe_allow_html=True)
         stframe = st.empty()
+        st.markdown('</div>', unsafe_allow_html=True)
         
     with col_stats:
-        stop_button_pressed = st.button("⏹ Stop Processing", use_container_width=True, type="secondary")
+        stop_button_pressed = st.button("STOP SCAN", use_container_width=True, type="secondary")
         st.markdown("<br>", unsafe_allow_html=True)
-        progress_bar = st.progress(0)
         status_text = st.empty()
+        st.markdown("<br>", unsafe_allow_html=True)
         
         stat_helmets = st.empty()
         stat_danger = st.empty()
@@ -65,7 +71,7 @@ if uploaded_file is not None:
     while cap.isOpened() and not stop_button_pressed:
         ret, frame = cap.read()
         if not ret:
-            status_text.success("✅ Video processing complete.")
+            status_text.markdown("<span class='text-safe mono-text'>[+] SCAN COMPLETE</span>", unsafe_allow_html=True)
             break
             
         frame_count += 1
@@ -88,13 +94,8 @@ if uploaded_file is not None:
         annotated_frame_rgb = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
         stframe.image(annotated_frame_rgb, use_container_width=True)
         
-        # Update Stats
-        if total_frames > 0:
-            progress = min(frame_count / total_frames, 1.0)
-            progress_bar.progress(progress)
-            
-        status_text.markdown(f"**Frames Processed:** {frame_count}/{total_frames} | **FPS:** {fps:.1f}")
-        stat_helmets.metric("Helmets Detected", stats["helmet_count"])
-        stat_danger.metric("No Helmet", stats["no_helmet_count"])
+        status_text.markdown(f"<span class='text-muted mono-text'>FRAME: {frame_count:04d} / {total_frames:04d} | FPS: {fps:.1f}</span>", unsafe_allow_html=True)
+        stat_helmets.metric("HELMETS (SAFE)", stats["helmet_count"])
+        stat_danger.metric("NO HELMET (DANGER)", stats["no_helmet_count"])
         
     cap.release()
