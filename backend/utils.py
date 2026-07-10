@@ -31,7 +31,7 @@ def draw_boxes(frame, results, log_to_db=False):
             # Determine if this detection is "safe" (helmet) or "danger" (no helmet / head)
             # by checking the actual class name from the model
             is_helmet = "helmet" in label and "no" not in label
-            is_no_helmet = ("no" in label and "helmet" in label) or label in ["head", "no-helmet", "no_helmet"]
+            is_no_helmet = ("no" in label and "helmet" in label) or any(word in label for word in ["head", "face", "hair", "no-helmet", "no_helmet"])
 
             if is_helmet:
                 color = (0, 255, 0)  # GREEN for Helmet ✅
