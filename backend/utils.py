@@ -28,9 +28,10 @@ def draw_boxes(frame, results, log_to_db=False):
             # Get the REAL class name from the model
             label = r.names.get(class_id, f"Class {class_id}").lower()
 
-            # Determine if this detection is "safe" (helmet) or "danger" (no helmet / head)
-            # RULE: If the class name contains "helmet" (and NOT "no"), it's SAFE.
-            #        EVERYTHING ELSE (head, face, hair, person, unknown) = DANGER.
+            # --- CLASSIFICATION LOGIC ---
+            # Model Classes: {0: '1-2-helmet', 1: '3-4-helmet', 2: 'Bald', 3: 'Cap', 4: 'Face and Hair', 5: 'Full-face-helmet'}
+            # HELMET (Safe):      1-2-helmet, 3-4-helmet, full-face-helmet
+            # NO HELMET (Danger): Bald, Cap, Face and Hair
             is_helmet = "helmet" in label and "no" not in label
 
             if is_helmet:
