@@ -35,19 +35,22 @@ def draw_boxes(frame, results, log_to_db=False):
 
             if is_helmet:
                 color = (0, 255, 0)  # GREEN for Helmet ✅
+                display_label = "Helmet"
                 found_helmet = True
                 helmet_count += 1
                 max_safe_conf = max(max_safe_conf, confidence)
             elif is_no_helmet:
                 color = (0, 0, 255)  # RED for No Helmet 🚨
+                display_label = "No Helmet"
                 found_no_helmet = True
                 no_helmet_count += 1
                 max_danger_conf = max(max_danger_conf, confidence)
             else:
                 color = (255, 165, 0)  # ORANGE for unknown/other classes
+                display_label = label
 
             cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
-            display_text = f"{label} {confidence:.2f}"
+            display_text = f"{display_label} {confidence:.2f}"
             cv2.putText(annotated_frame, display_text, (x1, y1 - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
