@@ -146,8 +146,8 @@ else:
         </div>
         """, unsafe_allow_html=True)
         
-        stat_helmets.metric("COMPLIANT (SAFE)", f"{stats['helmet_count']:02d}")
-        stat_danger.metric("FLAGGED (DANGER)", f"{stats['no_helmet_count']:02d}")
+        stat_helmets.metric("✅ Helmet", f"{stats['helmet_count']:02d}")
+        stat_danger.metric("🚨 No Helmet", f"{stats['no_helmet_count']:02d}")
         
         if stats['no_helmet_count'] > 0:
             if current_time - last_alarm_time > 3:

@@ -133,8 +133,8 @@ if st.session_state.run_camera:
         helmets = stats.get("helmet_count", 0)
         no_helmets = stats.get("no_helmet_count", 0)
         
-        stat_helmets.metric("COMPLIANT (SAFE)", f"{helmets:02d}")
-        stat_danger.metric("FLAGGED (DANGER)", f"{no_helmets:02d}")
+        stat_helmets.metric("✅ Helmet", f"{helmets:02d}")
+        stat_danger.metric("🚨 No Helmet", f"{no_helmets:02d}")
         stat_fps.metric("FPS", f"{fps:.1f}")
         
         if no_helmets > 0:

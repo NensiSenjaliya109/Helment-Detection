@@ -70,8 +70,8 @@ else:
     with col_stats:
         st.markdown("<h4 style='font-size: 14px;'>[ ANALYSIS ]</h4>", unsafe_allow_html=True)
         
-        st.metric(label="COMPLIANT (SAFE)", value=f"{stats['helmet_count']:02d}")
-        st.metric(label="FLAGGED (DANGER)", value=f"{stats['no_helmet_count']:02d}")
+        st.metric(label="✅ Helmet", value=f"{stats['helmet_count']:02d}")
+        st.metric(label="🚨 No Helmet", value=f"{stats['no_helmet_count']:02d}")
         
         st.markdown("<br>", unsafe_allow_html=True)
         if stats["danger"]:

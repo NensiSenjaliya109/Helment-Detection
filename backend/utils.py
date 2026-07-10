@@ -29,9 +29,9 @@ def draw_boxes(frame, results, log_to_db=False):
             label = r.names.get(class_id, f"Class {class_id}").lower()
 
             # Determine if this detection is "safe" (helmet) or "danger" (no helmet / head)
-            # by checking the actual class name from the model
+            # RULE: If the class name contains "helmet" (and NOT "no"), it's SAFE.
+            #        EVERYTHING ELSE (head, face, hair, person, unknown) = DANGER.
             is_helmet = "helmet" in label and "no" not in label
-            is_no_helmet = ("no" in label and "helmet" in label) or any(word in label for word in ["head", "face", "hair", "no-helmet", "no_helmet"])
 
             if is_helmet:
                 color = (0, 255, 0)  # GREEN for Helmet ✅
@@ -39,15 +39,12 @@ def draw_boxes(frame, results, log_to_db=False):
                 found_helmet = True
                 helmet_count += 1
                 max_safe_conf = max(max_safe_conf, confidence)
-            elif is_no_helmet:
+            else:
                 color = (0, 0, 255)  # RED for No Helmet 🚨
                 display_label = "No Helmet"
                 found_no_helmet = True
                 no_helmet_count += 1
                 max_danger_conf = max(max_danger_conf, confidence)
-            else:
-                color = (255, 165, 0)  # ORANGE for unknown/other classes
-                display_label = label
 
             cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
             display_text = f"{display_label} {confidence:.2f}"
