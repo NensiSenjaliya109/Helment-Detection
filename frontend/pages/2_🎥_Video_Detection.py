@@ -39,6 +39,26 @@ def load_detector():
 
 detector = load_detector()
 
+def get_alarm_html():
+    return """
+    <script>
+        try {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = ctx.createOscillator();
+            var gainNode = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            osc.frequency.setValueAtTime(600, ctx.currentTime + 0.2);
+            osc.frequency.setValueAtTime(800, ctx.currentTime + 0.4);
+            gainNode.gain.value = 0.1; 
+            osc.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.6);
+        } catch(e) {}
+    </script>
+    """
+
 uploaded_file = st.file_uploader("DROP FOOTAGE HERE", type=["mp4", "avi", "mov", "mkv"])
 
 if uploaded_file is None:
@@ -69,8 +89,10 @@ else:
         st.markdown("<br>", unsafe_allow_html=True)
         stat_helmets = st.empty()
         stat_danger = st.empty()
+        alarm_placeholder = st.empty()
     
     last_db_log_time = 0
+    last_alarm_time = 0
     frame_count = 0
     
     # Update Header Status
@@ -126,6 +148,11 @@ else:
         
         stat_helmets.metric("COMPLIANT (SAFE)", f"{stats['helmet_count']:02d}")
         stat_danger.metric("FLAGGED (DANGER)", f"{stats['no_helmet_count']:02d}")
+        
+        if stats['no_helmet_count'] > 0:
+            if current_time - last_alarm_time > 3:
+                last_alarm_time = current_time
+                alarm_placeholder.markdown(get_alarm_html(), unsafe_allow_html=True)
         
     cap.release()
 

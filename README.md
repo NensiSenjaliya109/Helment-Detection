@@ -12,8 +12,17 @@ This project is an automated safety monitoring system. It uses Artificial Intell
 # ⚙️ How it works
 1. **The Brain (AI):** A custom-trained YOLOv8 object detection model (`best.pt`) looks at video frames and mathematically calculates the probability of a "Helmet" or "No Helmet" being present.
 2. **The Eyes (OpenCV):** We use OpenCV to process the images, draw bounding boxes (Green for Safe, Red for Danger), and overlay confidence scores.
-3. **The Memory (Supabase):** Every time a frame is analyzed, the system securely sends a log to a Supabase PostgreSQL database so managers can view a history of safety violations.
-4. **The Face (Streamlit):** Everything is wrapped in a beautiful, dark-mode web dashboard that allows users to interact with the AI without needing to write code.
+3. **The Alarm System:** A custom JavaScript `AudioContext` snippet automatically injects a digital two-tone siren (800Hz -> 600Hz) when a violation is detected on live or recorded feeds, complete with a 3-second cooldown to prevent audio spam.
+4. **The Memory (Supabase):** Every time a frame is analyzed, the system securely sends a log to a Supabase PostgreSQL database so managers can view a history of safety violations.
+5. **The Face (Streamlit):** Everything is wrapped in a beautiful, dark-mode web dashboard that allows users to interact with the AI without needing to write code.
+
+---
+
+# 🧠 Model Training & Fine-Tuning
+The AI model (`best.pt`) powering this application was not built in a day! It went through a rigorous training process:
+* **Datasets via Roboflow:** We utilized custom, high-quality datasets hosted on [Roboflow](https://roboflow.com/) to gather thousands of images of construction hard hats and motorcycle helmets.
+* **Cloud GPU Training:** Because training AI requires immense computational power, the model was trained using free cloud GPUs on **Google Colab** and **Kaggle Notebooks**. 
+* **Transfer Learning (Fine-Tuning):** Instead of starting from scratch every time, we utilized *Transfer Learning*. We took a base YOLOv8 model, trained it on a hard-hat dataset, saved that model, and then **fine-tuned** that exact same model multiple times on new datasets (like motorcycle helmets). This layered learning approach dramatically increased the model's overall accuracy and generalization across different domains.
 
 # 🏗️ Real-World Use Cases
 This system is highly valuable in industrial and urban environments where safety is critical:

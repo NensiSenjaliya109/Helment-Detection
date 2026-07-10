@@ -44,6 +44,29 @@ if "run_camera" not in st.session_state:
     st.session_state.run_camera = False
 if "last_db_log_time" not in st.session_state:
     st.session_state.last_db_log_time = 0
+if "last_alarm_time" not in st.session_state:
+    st.session_state.last_alarm_time = 0
+
+def get_alarm_html():
+    return """
+    <script>
+        try {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = ctx.createOscillator();
+            var gainNode = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            osc.frequency.setValueAtTime(600, ctx.currentTime + 0.2);
+            osc.frequency.setValueAtTime(800, ctx.currentTime + 0.4);
+            gainNode.gain.value = 0.1; 
+            osc.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.6);
+        } catch(e) {}
+    </script>
+    """
+
 
 col1, col2 = st.columns(2)
 with col1:
@@ -86,6 +109,7 @@ if st.session_state.run_camera:
         stat_fps = st.empty()
         st.markdown("<br>", unsafe_allow_html=True)
         stats_placeholder = st.empty()
+        alarm_placeholder = st.empty()
 
     if camera_frame is not None:
         start_time = time.time()
@@ -120,6 +144,12 @@ if st.session_state.run_camera:
                 <div class="mono-text" style="color: var(--text-secondary); font-size: 11px;">{no_helmets} NON-COMPLIANT</div>
             </div>
             """, unsafe_allow_html=True)
+            
+            # Sound Alarm every 3 seconds
+            if current_time - st.session_state.last_alarm_time > 3:
+                st.session_state.last_alarm_time = current_time
+                alarm_placeholder.markdown(get_alarm_html(), unsafe_allow_html=True)
+                
         elif helmets > 0:
             stats_placeholder.markdown(f"""
             <div style="border-left: 3px solid var(--accent-green); padding-left: 10px; margin-bottom: 20px;">
