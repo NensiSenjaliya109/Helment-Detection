@@ -29,10 +29,12 @@ def draw_boxes(frame, results, log_to_db=False):
             label = r.names.get(class_id, f"Class {class_id}").lower()
 
             # --- CLASSIFICATION LOGIC ---
-            # Model Classes: {0: '1-2-helmet', 1: '3-4-helmet', 2: 'Bald', 3: 'Cap', 4: 'Face and Hair', 5: 'Full-face-helmet'}
-            # HELMET (Safe):      1-2-helmet, 3-4-helmet, full-face-helmet
-            # NO HELMET (Danger): Bald, Cap, Face and Hair
-            is_helmet = "helmet" in label and "no" not in label
+            # Model Classes: {0: 'full', 1: 'half', 2: 'invalid', 3: 'no-helmet'}
+            # HELMET (Safe):      full, half
+            # NO HELMET (Danger): invalid, no-helmet
+            
+            # If it's a full or half helmet, it's safe. Otherwise, it's danger!
+            is_helmet = label in ["full", "half"]
 
             if is_helmet:
                 color = (0, 255, 0)  # GREEN for Helmet ✅
